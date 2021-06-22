@@ -1,0 +1,56 @@
+#%RAML 1.0
+baseUri: https://anypoint.mulesoft.com/mocking/api/v1/links/2e8a846f-3d83-4c9f-8537-dc31b6a9063e/ # 
+version: 1.0
+title: bridgekart-storedetails-api
+
+
+traits:
+  coomonHeaders : !include reusableHeaders/headers.raml
+  commonQuery: !include reusableQuery/query.raml
+
+types:
+  address:
+    properties:
+      street:
+        example:
+          "Electronic City"
+        required: true
+        type: string
+      pincode:
+        example:
+          560068
+        type: number              
+  storeDetails:
+    properties:
+      address:
+        type: address          
+  inputRequest:
+    properties:
+      name:
+        example:
+          "BigBasket"
+        required: true
+      Location:
+        example:
+          "Bangalore"
+        required: true
+      storeDetails:
+        type: storeDetails          
+
+
+/getStoreDetails: 
+  is:
+    coomonHeaders:          
+  get:          
+    queryParameters:
+      storeID:
+        required: true
+        maxLength: 5
+        example:
+          "1212"                         
+    responses:      
+      200:
+        body:
+          application/json:
+            example:
+              !include examplePayloads/output.json
