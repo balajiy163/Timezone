@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/apikit" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:spring="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/apikit http://www.mulesoft.org/schema/mule/apikit/current/mule-apikit.xsd
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd">
+    <http:listener-config name="bridgekart-storedetails-api-httpListenerConfig" host="0.0.0.0" port="8081" doc:name="HTTP Listener Configuration"/>
+    <apikit:config name="bridgekart-storedetails-api-config" raml="bridgekart-storedetails-api.raml" consoleEnabled="false" doc:name="Router"/>
+    <flow name="bridgekart-storedetails-api-main">
+        <http:listener config-ref="bridgekart-storedetails-api-httpListenerConfig" path="/api/*" doc:name="HTTP"/>
+        <apikit:router config-ref="bridgekart-storedetails-api-config" doc:name="APIkit Router"/>
+        <exception-strategy ref="bridgekart-storedetails-api-apiKitGlobalExceptionMapping" doc:name="Reference Exception Strategy"/>
+    </flow>
+    <flow name="bridgekart-storedetails-api-console">
+        <http:listener config-ref="bridgekart-storedetails-api-httpListenerConfig" path="/console/*" doc:name="HTTP"/>
+        <apikit:console config-ref="bridgekart-storedetails-api-config" doc:name="APIkit Console"/>
+    </flow>
+    <flow name="get:/getStoreDetails/{filesystem}:bridgekart-storedetails-api-config">
+        <set-payload value="[&#xD;&#xA;  {&#xD;&#xA;    &quot;product&quot;: {&#xD;&#xA;      &quot;id&quot;: 0,&#xD;&#xA;      &quot;name&quot;: &quot;string&quot;,&#xD;&#xA;      &quot;description&quot;: &quot;string&quot;,&#xD;&#xA;      &quot;price&quot;: 0,&#xD;&#xA;      &quot;discount&quot;: 0,&#xD;&#xA;      &quot;weight&quot;: 1,&#xD;&#xA;      &quot;stock&quot;: 100,&#xD;&#xA;      &quot;stock_unlimited&quot;: true,&#xD;&#xA;      &quot;sku&quot;: &quot;string&quot;,&#xD;&#xA;      &quot;google_product_category&quot;: &quot;string&quot;,&#xD;&#xA;      &quot;featured&quot;: false,&#xD;&#xA;      &quot;status&quot;: &quot;available&quot;,&#xD;&#xA;      &quot;created_at&quot;: &quot;string&quot;,&#xD;&#xA;      &quot;package_format&quot;: &quot;box&quot;,&#xD;&#xA;      &quot;length&quot;: 0,&#xD;&#xA;      &quot;width&quot;: 0,&#xD;&#xA;      &quot;height&quot;: 0,&#xD;&#xA;      &quot;diameter&quot;: 0,&#xD;&#xA;      &quot;permalink&quot;: &quot;string&quot;,&#xD;&#xA;      &quot;categories&quot;: [&#xD;&#xA;        {&#xD;&#xA;          &quot;id&quot;: 0,&#xD;&#xA;          &quot;name&quot;: &quot;string&quot;,&#xD;&#xA;          &quot;parent_id&quot;: 0,&#xD;&#xA;          &quot;permalink&quot;: &quot;string&quot;&#xD;&#xA;        }&#xD;&#xA;      ],&#xD;&#xA;      &quot;images&quot;: [&#xD;&#xA;        {&#xD;&#xA;          &quot;id&quot;: 0,&#xD;&#xA;          &quot;position&quot;: 0,&#xD;&#xA;          &quot;url&quot;: &quot;string&quot;&#xD;&#xA;        }&#xD;&#xA;      ],&#xD;&#xA;      &quot;variants&quot;: [&#xD;&#xA;        {&#xD;&#xA;          &quot;id&quot;: 0,&#xD;&#xA;          &quot;price&quot;: 0,&#xD;&#xA;          &quot;discount&quot;: 0,&#xD;&#xA;          &quot;sku&quot;: &quot;string&quot;,&#xD;&#xA;          &quot;stock&quot;: 100,&#xD;&#xA;          &quot;stock_unlimited&quot;: true&#xD;&#xA;        }&#xD;&#xA;      ]&#xD;&#xA;    }&#xD;&#xA;  }&#xD;&#xA;]" doc:name="Set Payload"/>
+    </flow>
+    <flow name="get:/loginToStore:bridgekart-storedetails-api-config">
+        <set-payload value="#[NullPayload.getInstance()]" doc:name="Set Payload"/>
+    </flow>
+    <flow name="get:/registerStore:bridgekart-storedetails-api-config">
+        <set-payload value="#[NullPayload.getInstance()]" doc:name="Set Payload"/>
+    </flow>
+    <flow name="post:/registerStore:application/json:bridgekart-storedetails-api-config">
+        <set-payload value="{&#xA;&quot;message&quot; : &quot;Registration Successful&quot;&#xA;}" doc:name="Set Payload"/>
+    </flow>
+    <apikit:mapping-exception-strategy name="bridgekart-storedetails-api-apiKitGlobalExceptionMapping">
+        <apikit:mapping statusCode="404">
+            <apikit:exception value="org.mule.module.apikit.exception.NotFoundException" />
+            <set-property propertyName="Content-Type" value="application/json" doc:name="Property"/>
+            <set-payload value="{ &quot;message&quot;: &quot;Resource not found&quot; }" doc:name="Set Payload"/>
+        </apikit:mapping>
+        <apikit:mapping statusCode="405">
+            <apikit:exception value="org.mule.module.apikit.exception.MethodNotAllowedException" />
+            <set-property propertyName="Content-Type" value="application/json" doc:name="Property"/>
+            <set-payload value="{ &quot;message&quot;: &quot;Method not allowed&quot; }" doc:name="Set Payload"/>
+        </apikit:mapping>
+        <apikit:mapping statusCode="415">
+            <apikit:exception value="org.mule.module.apikit.exception.UnsupportedMediaTypeException" />
+            <set-property propertyName="Content-Type" value="application/json" doc:name="Property"/>
+            <set-payload value="{ &quot;message&quot;: &quot;Unsupported media type&quot; }" doc:name="Set Payload"/>
+        </apikit:mapping>
+        <apikit:mapping statusCode="406">
+            <apikit:exception value="org.mule.module.apikit.exception.NotAcceptableException" />
+            <set-property propertyName="Content-Type" value="application/json" doc:name="Property"/>
+            <set-payload value="{ &quot;message&quot;: &quot;Not acceptable&quot; }" doc:name="Set Payload"/>
+        </apikit:mapping>
+        <apikit:mapping statusCode="400">
+            <apikit:exception value="org.mule.module.apikit.exception.BadRequestException" />
+            <set-property propertyName="Content-Type" value="application/json" doc:name="Property"/>
+            <set-payload value="{ &quot;message&quot;: &quot;Bad request&quot; }" doc:name="Set Payload"/>
+        </apikit:mapping>
+    </apikit:mapping-exception-strategy>
+</mule>

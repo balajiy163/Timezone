@@ -1,0 +1,13 @@
+#%RAML 1.0 Trait
+headers:
+  username:
+    required: true
+    enum: ['admin','root']    
+    maxLength: 8
+    example:
+      "admin"
+  password:
+    required: true
+    maxLength: 8
+    example:
+      "admin"

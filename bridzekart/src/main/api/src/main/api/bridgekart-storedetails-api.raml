@@ -1,0 +1,46 @@
+#%RAML 1.0
+baseUri: https://anypoint.mulesoft.com/mocking/api/v1/links/1a382c20-737a-469a-9d93-7a27896e8e69/ # 
+version: 1.0
+title: bridgekart-storedetails-api
+
+traits:
+  coomonHeaders : !include reusableHeaders/headers.raml
+  commonQuery: !include reusableQuery/query.raml
+
+/getStoreDetails/{filesystem}:
+  uriParameters:
+    filesystem:
+      required: true
+      enum: ['tmp','var\tmp']           
+  get:                                   
+    responses:      
+      200:
+        body:
+          application/json:
+            example:
+              !include examplePayloads/output.json
+/registerStore:
+  is:
+    coomonHeaders:  
+  get:    
+    is:
+      - commonQuery:        
+  post:   
+    body:      
+      application/json: 
+        schema: !include mySchemas/inputSchema.json    
+    responses:
+      200:
+        body:
+          application/json:
+            example:
+              {
+                "message": "Registration Successful"
+              }  
+/loginToStore:
+  is:
+    coomonHeaders:      
+  get:      
+    is:
+      - commonQuery:
+           
